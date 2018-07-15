@@ -1,7 +1,7 @@
 ﻿using TradingBot.Models;
 using System;
 
-namespace TradingBot.Services
+namespace TradingBot.Pipes
 {
     public interface IMarketSubject : IObservable<MarketUpdate>, IDisposable
     {

@@ -1,6 +1,10 @@
-public class Instrument
+
+namespace TradingBot.Models
 {
-    public string Symbol { get; set; }
-    public double TickSize { get; set; }
-    public string Volume { get; set; }
+    public class Instrument
+    {
+        public string Symbol { get; set; }
+        public double TickSize { get; set; }
+        public string Volume { get; set; }
+    }
 }

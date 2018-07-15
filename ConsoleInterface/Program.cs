@@ -1,6 +1,5 @@
 ﻿using System;
 using TradingBot.Pipes;
-using TradingBot.Services;
 
 namespace ConsoleInterface
 {
