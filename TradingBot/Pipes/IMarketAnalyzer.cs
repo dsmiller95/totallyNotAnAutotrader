@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TradingBot.Models.SimulatorModels;
 
 namespace TradingBot.Pipes
 {
@@ -10,5 +11,10 @@ namespace TradingBot.Pipes
     {
         event EventHandler<SellRecommendation> Sell;
         event EventHandler<BuyRecommendation> Buy;
+
+        MarketPosition Position
+        {
+            set;
+        }
     }
 }

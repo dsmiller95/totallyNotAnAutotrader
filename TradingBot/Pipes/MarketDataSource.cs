@@ -15,10 +15,17 @@ namespace TradingBot.Pipes
         {
             _observers = new List<IObserver<MarketUpdate>>();
             cancellationSource = new CancellationTokenSource();
+        }
+
+        /// <summary>
+        /// Starts running the task to long pull the data
+        /// </summary>
+        protected void BeginPoll()
+        {
             Task.Run(async () =>
-                {
-                    await this.PollSource();
-                },
+            {
+                await this.PollSource();
+            },
                 cancellationSource.Token
             );
         }

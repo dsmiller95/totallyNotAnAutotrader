@@ -1,5 +1,5 @@
 
-namespace TradingBot.Models
+namespace TradingBot.Models.APIModels
 {
     public class OrderBook
     {

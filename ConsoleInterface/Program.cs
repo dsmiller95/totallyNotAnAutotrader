@@ -9,10 +9,12 @@ namespace ConsoleInterface
         {
             Console.WriteLine("Hello World!");
 
-            var dataSource = new FakeMarketSubject();
+            var historicalSource = new HistoricalDataSource("../../../../Market Data Files/coinbaseUSD_1-min_data_2014-12-01_to_2018-06-27.csv");
+
+            var dataSource = new FakeMarketData();
             var dataAnalyzer = new FakeMarketAnalyzer();
 
-            dataSource.Subscribe(dataAnalyzer);
+            historicalSource.Subscribe(dataAnalyzer);
 
             dataAnalyzer.Buy += OnBuySignal;
             dataAnalyzer.Sell += OnSellSignal;
@@ -22,12 +24,12 @@ namespace ConsoleInterface
 
         private static void OnSellSignal(object sender, TradingBot.Models.SellRecommendation e)
         {
-            Console.Out.WriteLine($"SELL! {e.SellAmount} Units!");
+            Console.Out.WriteLineAsync($"SELL! {e.SellAmount} Units!");
         }
 
         private static void OnBuySignal(object sender, TradingBot.Models.BuyRecommendation e)
         {
-            Console.Out.WriteLine($"BUY! {e.BuyAmount} Units!");
+            Console.Out.WriteLineAsync($"BUY! {e.BuyAmount} Units!");
         }
     }
 }

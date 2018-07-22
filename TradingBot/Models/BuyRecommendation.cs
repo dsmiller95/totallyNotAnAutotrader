@@ -7,6 +7,12 @@ namespace TradingBot.Models
 {
     public class BuyRecommendation : EventArgs
     {
+        public DateTime TimeStamp
+        {
+            get;
+            set;
+        }
+
         public double BuyAmount
         {
             get;

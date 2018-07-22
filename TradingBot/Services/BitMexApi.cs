@@ -7,10 +7,9 @@ using System.Net;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
-using TradingBot.Models;
+using TradingBot.Models.APIModels;
 
-
-    namespace TradingBot.Services
+namespace TradingBot.Services
 {
     public class BitMexApi
     {

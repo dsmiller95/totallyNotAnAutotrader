@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace TradingBot.Pipes
 {
-    public class FakeMarketSubject : MarketDataSource
+    public class FakeMarketData : MarketDataSource
     {
         protected override async Task PollSource()
         {
             while (true)
             {
                 await Task.Delay(5000);
-                var update = new MarketUpdate(8, DateTime.UtcNow);
+                var update = new MarketUpdate(5, 9, 10, 4, DateTime.UtcNow);
                 this.NotifyObservers(update);
             }
         }

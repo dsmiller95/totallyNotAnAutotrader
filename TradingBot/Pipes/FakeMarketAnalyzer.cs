@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using TradingBot.Models;
+using TradingBot.Models.SimulatorModels;
 
 namespace TradingBot.Pipes
 {
@@ -9,6 +10,12 @@ namespace TradingBot.Pipes
     {
         public event EventHandler<SellRecommendation> Sell;
         public event EventHandler<BuyRecommendation> Buy;
+
+        public MarketPosition Position
+        {
+            private get;
+            set;
+        }
 
         private LinkedList<MarketUpdate> updates = new LinkedList<MarketUpdate>();
 
@@ -32,7 +39,7 @@ namespace TradingBot.Pipes
                 updates.RemoveLast();
             }
 
-            var pricePoint = updates.Average(update => update.CurrentPrice) - 10;
+            var pricePoint = updates.Average(update => update.Open) - 10;
             if (pricePoint > 0)
             {
                 Sell(this, new SellRecommendation { SellAmount = pricePoint });

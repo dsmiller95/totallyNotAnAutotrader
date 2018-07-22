@@ -7,17 +7,39 @@ namespace TradingBot.Models
 {
     public class MarketUpdate : EventArgs
     {
-        public MarketUpdate(int price, DateTime time)
+        public MarketUpdate(double open, double close, double high, double low, DateTime time)
         {
-            this.CurrentPrice = price;
+            this.Open = open;
+            this.Close = close;
+            this.High = high;
+            this.Low = low;
             this.Time = time;
         }
 
-        public int CurrentPrice
+        public double Open
         {
             private set;
             get;
         }
+
+        public double Close
+        {
+            private set;
+            get;
+        }
+
+        public double Low
+        {
+            private set;
+            get;
+        }
+
+        public double High
+        {
+            private set;
+            get;
+        }
+
         public DateTime Time
         {
             private set;

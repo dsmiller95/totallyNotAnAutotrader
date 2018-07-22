@@ -1,6 +1,6 @@
 using System;
 
-namespace TradingBot.Models
+namespace TradingBot.Models.APIModels
 {
     public class Order
     {
