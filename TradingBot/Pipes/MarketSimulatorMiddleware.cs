@@ -3,10 +3,17 @@ using System.Reactive.Linq;
 using System.Collections.Generic;
 using TradingBot.Models.SimulatorModels;
 using System.Linq;
+using System;
 
 namespace TradingBot.Pipes
 {
-    class MarketSimulatorMiddleware
+    /// <summary>
+    /// A class used to encapsulate the interaction between the data source and the market analyzer
+    ///     Automatically updates orders before new information is pushed to the analyzer
+    ///     gives the analyzer access to data about the current position
+    ///     
+    /// </summary>
+    public class MarketSimulatorMiddleware
     {
         private IMarketAnalyzer analyzer;
 
@@ -15,6 +22,12 @@ namespace TradingBot.Pipes
         public MarketSimulatorMiddleware(IMarketSubject dataSource, IMarketAnalyzer dataAnalyzer)
         {
             this.analyzer = dataAnalyzer;
+            this.position = new MarketPosition
+            {
+                orders = new List<Order>(),
+                USD = 100,
+                BTC = 1
+            };
 
             dataSource
                 .Select(this.UpdateModel)
@@ -22,13 +35,6 @@ namespace TradingBot.Pipes
 
             this.analyzer.Sell += new System.EventHandler<SellRecommendation>(this.OnSellOrder);
             this.analyzer.Buy += new System.EventHandler<BuyRecommendation>(this.OnBuyOrder);
-
-            this.position = new MarketPosition
-            {
-                orders = new List<Order>(),
-                USD = 100,
-                BTC = 1
-            };
 
             dataAnalyzer.Position = this.position;
         }
@@ -55,6 +61,11 @@ namespace TradingBot.Pipes
             });
         }
 
+        /// <summary>
+        /// updates the current position based on the new market price
+        /// </summary>
+        /// <param name="update"></param>
+        /// <returns></returns>
         private MarketUpdate UpdateModel(MarketUpdate update)
         {
             this.position.orders = position.orders.Where(order =>
@@ -64,10 +75,12 @@ namespace TradingBot.Pipes
                     case OrderType.MarketBuy:
                         position.USD -= order.OrderQty * update.Open;
                         position.BTC += order.OrderQty;
+                        Console.Out.WriteLineAsync($"{this.position}\t{this.position.BTC * update.Open + this.position.USD:C2}\tBought\t{order.OrderQty:F5} at {update.Open:F5}");
                         return false;
                     case OrderType.MarketSell:
                         position.USD += order.OrderQty * update.Open;
                         position.BTC -= order.OrderQty;
+                        Console.Out.WriteLineAsync($"{this.position}\t{this.position.BTC * update.Open + this.position.USD:C2}\tSold\t{order.OrderQty:F5} at {update.Open:F5}");
                         return false;
                     case OrderType.LimitBuy:
                         if (DoesOrderExecute(order, update))

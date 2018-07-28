@@ -9,5 +9,10 @@ namespace TradingBot.Models.SimulatorModels
         public IList<Order> orders;
         public double USD;
         public double BTC;
+
+        public override string ToString()
+        {
+            return $"{USD:C2}\t{BTC:F5}BTC\t{orders.Count} orders";
+        }
     }
 }
