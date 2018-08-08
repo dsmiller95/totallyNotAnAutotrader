@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="CuttingEdge.Conditions" Version="1.2.0" />
     <PackageReference Include="FileHelpers" Version="3.3.0" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
     <PackageReference Include="System.Reactive" Version="4.0.0" />
