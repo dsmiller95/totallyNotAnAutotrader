@@ -36,9 +36,15 @@ namespace TradingBot.Pipes
         /// <param name="update">The updated data snippit</param>
         protected void NotifyObservers(MarketUpdate update)
         {
-            if (_observers != null)
+            try
             {
-                _observers.ForEach((observer) => observer.OnNext(update));
+                if (_observers != null)
+                {
+                    _observers.ForEach((observer) => observer.OnNext(update));
+                }
+            } catch(Exception e)
+            {
+                ;
             }
         }
 

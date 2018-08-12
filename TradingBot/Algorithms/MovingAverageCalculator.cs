@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using TradingBot.Models;
 
 namespace TradingBot.Algorithms
 {
@@ -25,7 +27,7 @@ namespace TradingBot.Algorithms
         /// moving average.
         /// </summary>
         /// <param name="nextValue">The next value to be considered within the moving average.</param>
-        public void NextValue(double nextValue)
+        public void CalculateMovingAverage(double nextValue)
         {
             // add new value to the sum
             Sum += nextValue;

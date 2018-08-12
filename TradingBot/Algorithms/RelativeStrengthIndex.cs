@@ -5,43 +5,53 @@ namespace TradingBot.Algorithms
     public class RelativeStrengthIndex : RelativeStrengthIndexBase<double>
     {
 
-        public void CaculateRelativeStrengthIndex(double[] price, int period)
+        private int period;
+
+        public RelativeStrengthIndex(int period)
         {
-            Condition.Requires(price, "price")
-                .IsNotEmpty();
-            Condition.Requires(period, "period")
-                .IsGreaterThan(0)
-                .IsLessOrEqual(price.Length);
+            this.period = period;
+        }
 
-            RSI = new double[price.Length];
+        private double LastPrice = double.NaN;
 
-            Gain = 0.0;
-            Loss = 0.0;
+        private double InitialGain;
+        private double InitialLoss;
 
-            RSI[0] = 0.0;
+        private int TotalSamples;
 
-            for (var i = 1; i <= period; ++i)
+        public bool CalculateNextRSI(double price)
+        {
+            try
             {
-                var diff = price[i] - price[i - 1];
-                if (diff >= 0)
+                if (LastPrice == double.NaN)
                 {
-                    Gain += diff;
+                    return false;
                 }
-                else
+
+                var diff = price - LastPrice;
+
+                // If we don't have all of our samples yet for the first value, we need to start queing them up
+                if (TotalSamples <= period)
                 {
-                    Loss -= diff;
+                    if (diff >= 0)
+                    {
+                        Gain += diff;
+                    }
+                    else
+                    {
+                        Loss -= diff;
+                    }
+                    if(TotalSamples == period)
+                    {
+                        AverageGain = Gain / period;
+                        AverageLoss = Loss / period;
+                        RelativeStrength = Gain / Loss;
+
+                        RSI = 100 - (100 / (1 + RelativeStrength));
+                        return true;
+                    }
+                    return false;
                 }
-            }
-
-            AverageGain = Gain / period;
-            AverageLoss = Loss / period;
-            RelativeStrength = Gain / Loss;
-
-            RSI[period] = 100 - (100 / (1 + RelativeStrength));
-
-            for (var i = period + 1; i < price.Length; ++i)
-            {
-                var diff = price[i] - price[i - 1];
 
                 if (diff >= 0)
                 {
@@ -56,7 +66,13 @@ namespace TradingBot.Algorithms
 
                 RelativeStrength = AverageGain / AverageLoss;
 
-                RSI[i] = 100 - (100 / (1 + RelativeStrength));
+                RSI = 100 - (100 / (1 + RelativeStrength));
+                return true;
+            }
+            finally
+            {
+                TotalSamples++;
+                LastPrice = price;
             }
         }
     }

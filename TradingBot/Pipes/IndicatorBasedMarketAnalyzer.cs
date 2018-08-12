@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using TradingBot.Algorithms;
+using TradingBot.Algorithms.Indicators;
 using TradingBot.Models;
 using TradingBot.Models.SimulatorModels;
 
@@ -15,6 +16,8 @@ namespace TradingBot.Pipes
         public event EventHandler<SellRecommendation> Sell;
         public event EventHandler<BuyRecommendation> Buy;
 
+        private const double confidenceModifier = 0.2;
+
         public MarketPosition Position
         {
             private get;
@@ -26,6 +29,12 @@ namespace TradingBot.Pipes
         private LinkedList<MarketUpdate> updates = new LinkedList<MarketUpdate>();
 
         private const int maxDataLength = 50;
+        private readonly TimeSpan maxDataSpan = TimeSpan.FromDays(1);
+
+        public IndicatorBasedMarketAnalyzer(IList<IIndicator> indicators)
+        {
+            this.indicators = indicators;
+        }
 
         public void OnCompleted()
         {
@@ -46,21 +55,25 @@ namespace TradingBot.Pipes
         {
             //Control size of the buffer
             updates.AddFirst(value);
-            if(updates.Count > maxDataLength)
+            while((value.Time - updates.Last.Value.Time) > maxDataSpan)
             {
                 updates.RemoveLast();
             }
 
-            var recommendation = indicators.Select(indicator => indicator.GetRecommendation(updates)).Average();
-            if (recommendation <= -0.8)
+            var recommendations = indicators.Select(indicator => indicator.GetRecommendation(value, updates)).ToList();
+            //var message = String.Join('\t', recommendations.Zip(indicators, (rec, ind) => ind.PrintRecommendation(rec)));
+            //Console.Out.WriteLineAsync(message);
+
+            var recommendation = recommendations.Average();
+            if (recommendation <= -0.4)
             {
                 // The closer to -1 it is, the higher percentage we should buy
-                var recommendationStrength = -recommendation - 0.8;
+                var recommendationStrength = ((-recommendation - 0.4) / 0.6) * confidenceModifier;
                 Buy(this, new BuyRecommendation { BuyAmount = this.Position.USD * recommendationStrength / value.High });
-            }else if(recommendation >= 0.8)
+            }else if(recommendation >= 0.4)
             {
                 // The closer to 1 it is, the higher percentage we should sell
-                var recommendationStrength = recommendation - 0.8;
+                var recommendationStrength = ((recommendation - 0.4) / 0.6) * confidenceModifier;
                 Sell(this, new SellRecommendation { SellAmount = this.Position.BTC * recommendationStrength });
             }
         }

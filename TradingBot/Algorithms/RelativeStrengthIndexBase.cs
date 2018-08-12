@@ -6,12 +6,12 @@
         protected T Loss; 
         protected T AverageGain;
         protected T AverageLoss;
-        protected T RelativeStrength; 
+        protected T RelativeStrength;
 
         /// <summary>
         /// Current Relative Strength Index
         /// </summary>
-        public double[] RSI { get; set; }
+        public double RSI { get; set; } = double.NaN;
 
         /// <summary>
         /// ToString

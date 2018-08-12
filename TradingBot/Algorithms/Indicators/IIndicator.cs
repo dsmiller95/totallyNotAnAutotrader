@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using TradingBot.Models;
 
-namespace TradingBot.Algorithms
+namespace TradingBot.Algorithms.Indicators
 {
     /// <summary>
     /// Interface used to represent the work that is done by a market analysis algorithm
@@ -13,6 +13,8 @@ namespace TradingBot.Algorithms
         /// </summary>
         /// <param name="marketBuffer"></param>
         /// <returns>-1 to recommend a buy, 0 for no recommendation, and 1 to recomment a sell.</returns>
-        float GetRecommendation(IEnumerable<MarketUpdate> marketBuffer);
+        float GetRecommendation(MarketUpdate currentValue, IEnumerable<MarketUpdate> marketBuffer);
+
+        string PrintRecommendation(float recomendation);
     }
 }
